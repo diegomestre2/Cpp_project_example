@@ -1,0 +1,94 @@
+1. What is meant by the term prompt?
+Output some request to the user.
+
+2. Which operator do you use to read into a variable?
+std::cin
+
+3. If you want the user to input an integer value into your program for a variable named number,
+what are two lines of code you could write to ask the user to do it and to input the value into your
+program?
+int number{0};
+std::cin >> number;
+
+4. What is \n called and what purpose does it serve?
+newline character and it sets the cursor in the next line.
+
+5. What terminates input into a string?
+It terminates when finds a whitespace, space, newline and tab.
+
+6. What terminates input into an integer?
+Non numeric character
+
+7. How would you write
+cout << "Hello, ";
+cout << first_name;
+cout << "!\n";
+as a single line of code?
+cout << "Hello, " << first_name << "!\n";
+
+8. What is an object?
+It is a representation of a real world object into a programming concept.
+
+9. What is a literal?
+It is a value that constant and it is supposed to be used as it is.
+
+10. What kinds of literals are there?
+Integer literals, floating-point literals, boolean literals, string literals, character literals
+
+11. What is a variable?
+It is a named addresable space  in memory where some data can be stored.
+
+12. What are typical sizes for a char, an int, and a double?
+char = 1 byte int = 2 or 4  bytes and double = 8 bytes
+
+13. What measures do we use for the size of small entities in memory, such as ints and strings?
+bytes
+
+14. What is the difference between = and ==?
+= is the assigment operator and == is the iquality compare operator
+
+15. What is a definition?
+It is a pre compiled unique specification for a variable, object, function, class, enumerator.
+
+16. What is an initialization and how does it differ from an assignment?
+Assigment is storing a value in the location using the assigment operator (=).
+Initialization is an assigment done during the variable creation.
+
+17. What is string concatenation and how do you make it work in C++?
+A string concatenation means that two or more strings are joined together as one string, one after another.
+In C++ this is done with the + operator.
+
+18. Which of the following are legal names in C++? If a name is not legal, why not?
+T his_little_pig Ok
+T his_1_is fine  Spaces are not allowed
+2_For_1_specia l Initialize with numbers and spaces are not allowed
+la test thing Spaces
+the_$12_method special characters
+_this_is_ok underscore in the beginning is not allowed
+MiniMineMine Ok
+number Ok
+correct? special character is not allowed
+
+19. Give five examples of legal names that you shouldn’t use because they are likely to cause
+confusion.
+
+NAME reserved for macros
+Int standard does not use capital letters.
+f00 easy to mistype using foo
+f1 fl
+Name name names
+long_names_that_are_hard_to_type
+
+20. What are some good rules for choosing names?
+meaningful names.
+separate words by _ "house style"
+Initial capital letters for defined types Class...
+
+21. What is type safety and why is it important?
+It's the ability of the compiler to define the type of a variable during compilation and they are used according to the rules of their type.
+
+22. Why can conversion from double to int be a bad thing?
+Because you may lose precision.
+
+23. Define a rule to help decide if a conversion from one type to another is safe or unsafe.
+A convertion is safe when the convertion from type a to b allows the convertion back to a wihtout losing precision.
