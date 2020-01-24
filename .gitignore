@@ -1,3 +1,10 @@
+# Directories
+build
+.vscode
+test.bin
+.DS_Store
+
+
 # Prerequisites
 *.d
 
