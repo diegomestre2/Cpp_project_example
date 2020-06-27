@@ -86,7 +86,7 @@ SET(CMAKE_CXX_ARCHIVE_FINISH "<CMAKE_RANLIB> -no_warning_for_no_symbols -c <TARG
 add_subdirectory(src)
 
 # The executable code is here
-add_subdirectory(apps)
+add_subdirectory(main)
 
 # Testing only available if this is the main app
 # Emergency override MODERN_CMAKE_BUILD_TESTING provided as well

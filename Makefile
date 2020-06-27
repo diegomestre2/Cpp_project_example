@@ -1,5 +1,6 @@
-.PHONY: all
-all: main
+# Defines special targets or phony files
+.PHONY: clean all
+all: main debug
 
 # Ninja is build system that speeds up compilation, more in: https://ninja-build.org/
 GENERATOR=
