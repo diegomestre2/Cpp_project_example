@@ -78,7 +78,7 @@ include_directories( "src/include" )
 # ------------------
 # Add link_libraries
 # ------------------
-add_library(sources src/Chapter_6/calculator.cpp src/Chapter_6/name_value.cpp src/Chapter_6/english_gramma.cpp src/Chapter_6/game.cpp src/Chapter_8/my.cpp src/Chapter_9/chrono.cpp)
+add_library(sources src/Chapter_6/calculator.cpp src/Chapter_6/name_value.cpp src/Chapter_6/english_gramma.cpp src/Chapter_6/game.cpp src/Chapter_8/my.cpp src/Chapter_9/chrono.cpp src/Chapter_9/book.cpp)
 target_include_directories(sources PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/include>
     $<INSTALL_INTERFACE:include>
