@@ -1,5 +1,5 @@
 .PHONY: all
-all: main
+all: main debug
 
 GENERATOR=
 FORCE_COLOR=
