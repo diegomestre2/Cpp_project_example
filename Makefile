@@ -1,8 +1,6 @@
-# Defines special targets or phony files
-.PHONY: clean all
-all: main debug
+.PHONY: all
+all: main
 
-# Ninja is build system that speeds up compilation, more in: https://ninja-build.org/
 GENERATOR=
 FORCE_COLOR=
 ifeq ($(GEN),ninja)
@@ -24,5 +22,3 @@ debug:
 	cd build/debug && \
 	cmake $(GENERATOR) $(FORCE_COLOR) -DCMAKE_BUILD_TYPE=Debug ../.. && \
 	cmake --build .
-
-format:

@@ -311,10 +311,10 @@ bool is_prime(int32_t number) {
 	return true;
 }
 
-void sieve_of_eratosthenis(vector<int32_t> &found_primes, size_t max) {
+void sieve_of_eratosthenis(vector<int32_t> &found_primes, const size_t max) {
 
-	bool primes[max];
-	memset(primes, true, sizeof(primes));
+	auto primes = unique_ptr<bool[]>(new bool[max]);
+	memset(primes.get(), true, sizeof(primes));
 	for (size_t p = 2; p <= max; ++p) {
 		if (primes[p]) {
 			found_primes.push_back(p);

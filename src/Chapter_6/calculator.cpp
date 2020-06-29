@@ -1,108 +1,271 @@
-#include "calculator.hpp"
+#include <calculator.hpp>
 
-void Calculator::putback_token(Token token) {
-	ts.putback(token);
+//------------------------------------------------------------------------------
+
+// The putback() member function puts its argument back into the Token_stream's buffer:
+void TokenStream::putback(Token t) {
+	if (full)
+		error("putback() into a full buffer");
+	buffer = t;  // copy t to buffer
+	full = true; // buffer is now full
 }
 
-Token Calculator::get_token() {
-	return ts.get();
-}
-
-double Calculator::evaluate_expression() {
-	double left_term = next_term(); // read and evaluate a term
-	Token token = ts.get();         // get the next token
-	while (true) {
-		switch (token.kind) {
-		case '+':
-			left_term += next_term(); // evaluate term and add
-			token = ts.get();
-			break;
-
-		case '-':
-			left_term -= next_term(); // evaluate term and subtract
-			token = ts.get();
-			break;
-
-		default:
-			ts.putback(token);
-			return left_term; // finally, no more operators to evaluate, so return the answer
-		}
+Token TokenStream::get() {
+	if (full) { // do we already have a Token ready?
+		// remove token from buffer
+		full = false;
+		return buffer;
 	}
-}
 
-double Calculator::next_term() {
-	double left_primary = next_primary();
-	Token token = ts.get();
-	while (true) {
-		switch (token.kind) {
-		case '*':
-			left_primary *= next_primary();
-			token = ts.get();
-			break;
-		case '/': { // The block is enforced by the compiler when initiallizing a variable inside a switch statement
-			auto divisor = next_primary();
-			if (divisor == 0) {
-				error("Exception Parser Term: Division by 0 is not allowed");
+	char ch;
+	cin >> ch; // note that >> skips whitespace (space, newline, tab, etc.)
+
+	switch (ch) {
+	case print: // for "print"
+	case quit:  // for "quit"
+	case '(':
+	case ')':
+	case '+':
+	case '-':
+	case '*':
+	case '/':
+	case '%':
+	case result_char:
+		return Token(ch); // let each character represent itself
+	case '.':
+	case '0':
+	case '1':
+	case '2':
+	case '3':
+	case '4':
+	case '5':
+	case '6':
+	case '7':
+	case '8':
+	case '9': {
+		cin.putback(ch); // put digit back into the input stream
+		double val;
+		cin >> val; // read a floating-point number
+		return Token(number, val);
+	}
+	default:
+		if (isalpha(ch)) {
+			string s;
+			s += ch;
+			while (cin.get(ch) && (isalpha(ch) || isdigit(ch)))
+				s += ch;
+			cin.putback(ch);
+			if (s == decllet) {
+				return Token(let);
 			}
-			left_primary /= divisor;
-			token = ts.get();
+			return Token(name, s);
+		}
+		error("Bad token");
+	}
+	return Token(0, 0);
+}
+
+void TokenStream::ignore(char c) {
+	// first look in buffer
+	if (full && c == buffer.kind) {
+		full = false;
+		return;
+	}
+	full = false;
+	// now search input
+	char ch{'\0'};
+	while (std::cin >> ch)
+		if (ch == 0)
+			return;
+}
+
+void Calculator::run() {
+	try {
+		// pre defined names
+		define_name("pi", 3.1415926535);
+		define_name("e", 2.7182818284);
+		define_name("k", 1000);
+
+		run_cli();
+	} catch (runtime_error &e) {
+		cerr << e.what() << '\n';
+		cout << "Please enter the character ~ to close the window\n";
+		for (char ch; cin >> ch;) {
+			if (ch == '~')
+				exit(1);
+		}
+		exit(1);
+	} catch (exception &e) {
+		cerr << "error: " << e.what() << '\n';
+		clean_up();
+	} catch (...) {
+		cerr << "Oops: unknown exception!\n";
+		keep_window_open("~~");
+		exit(2);
+	}
+}
+
+void Calculator::run_cli() {
+	while (cin) {
+		std::cout << prompt;
+
+		Token t = ts.get();
+		while (t.kind == print) // eat ';'
+			t = ts.get();
+		if (t.kind == quit) { // 'q' for quiting
+			keep_window_open();
+			exit(0);
+		}
+		ts.putback(t);
+		cout << result_char << statement() << '\n';
+	}
+	keep_window_open();
+}
+
+double Calculator::statement() {
+	Token t = ts.get();
+	switch (t.kind) {
+	case let:
+		return declaration();
+	case name: {
+		if (is_declared(t.name)) {
+			t = get_token_for_name(t.name);
+			ts.putback(t);
+			return get_expression();
+		}
+		error("variable name not declared!");
+	}
+	default:
+		ts.putback(t);
+		return get_expression();
+	}
+}
+
+double Calculator::declaration() {
+	auto token = ts.get();
+	if (token.kind != name) {
+		error("name expected in declaration");
+	}
+	string var_name = token.name;
+	auto next_token = ts.get();
+	if (next_token.kind != result_char) {
+		error("= missing in declaration");
+	}
+
+	auto exp = get_expression();
+	define_name(var_name, exp);
+	return exp;
+}
+// deal with + and -
+double Calculator::get_expression() {
+	double left = get_term(); // read and evaluate a Term
+	Token t = ts.get();       // get the next token from token stream
+
+	while (true) {
+		switch (t.kind) {
+		case '+':
+			left += get_term(); // evaluate Term and add
+			t = ts.get();
+			break;
+		case '-':
+			left -= get_term(); // evaluate Term and subtract
+			t = ts.get();
+			break;
+		default:
+			ts.putback(t); // put t back into the token stream
+			return left;   // finally: no more + or -: return the answer
+		}
+	}
+}
+
+// deal with *, /, and %
+double Calculator::get_term() {
+	double left = get_primary();
+	Token t = ts.get(); // get the next token from token stream
+
+	while (true) {
+		switch (t.kind) {
+		case '*':
+			left *= get_primary();
+			t = ts.get();
+			break;
+		case '/': {
+			double d = get_primary();
+			if (d == 0)
+				error("divide by zero");
+			left /= d;
+			t = ts.get();
+			break;
+		}
+		case '%': {
+			double d = get_primary();
+			if (d == 0)
+				error("%: divide by zero");
+			left = fmod(left, d);
+			t = ts.get();
 			break;
 		}
 		default:
-			ts.putback(token);
-			return left_primary;
+			ts.putback(t); // put t back into the token stream
+			return left;
 		}
 	}
 }
 
-double Calculator::next_primary() {
-	Token token = ts.get();
-	switch (token.kind) {
-	case '{': {
-		auto expr = evaluate_expression();
-		token = ts.get();
-		if (token.kind != '}') {
-			error("Exception Parser Primary: Expected '}'");
-		}
-		return expr;
+double Calculator::get_primary() {
+	Token t = ts.get();
+	switch (t.kind) {
+	case '(': // handle '(' expression ')'
+	{
+		double d = get_expression();
+		t = ts.get();
+		if (t.kind != ')')
+			error("'), expected");
+		return d;
 	}
-	// handle (expression)
-	case '(': {
-		auto expr = evaluate_expression();
-		token = ts.get();
-		if (token.kind != ')') {
-			error("Exception Parser Primary: Expected ')'");
-		}
-		return expr;
+	case number:        // we use '8' to represent a number
+		return t.value; // return the number's value
+	case '-': {
+		return -get_primary();
 	}
-	case number: {
-		auto value = next_value(token.value);
-		return value;
+	case '+': {
+		return get_primary();
 	}
-	case quit:
-		ts.putback(token);
-		return 0;
 	default:
-		error("Exception Parser Primary: Expected a primary value");
+		error("primary expected");
 	}
-	throw string("Bad Token kind");
+	return 0.0;
 }
 
-int Calculator::next_value(int left_primary) {
-	Token token = ts.get();
-	switch (token.kind) {
-	case '!':
-		return factorial(left_primary);
-	default:
-		ts.putback(token);
-		return left_primary;
-	}
-	return 0;
+void Calculator::clean_up() {
+	ts.ignore(print);
 }
 
-int Calculator::factorial(int number) {
-	if (number == 0 || number == 1) {
-		return 1;
+bool Calculator::is_declared(const string &var) {
+	for (auto &v : var_table) {
+		if (v.name == var) {
+			return true;
+		}
 	}
-	return number * factorial(number - 1);
+	return false;
+}
+
+double Calculator::define_name(const string &var_name, double value) {
+	if (is_declared(var_name)) {
+		error(var_name, "declared twice");
+	}
+	var_table.emplace_back(var_name, value);
+	return value;
+}
+
+Token Calculator::get_token_for_name(const string &name) {
+	if (is_declared(name)) {
+		for (auto &v : var_table) {
+			if (v.name == name) {
+				return Token(number, v.value);
+			}
+		}
+	}
+	error("Name not declared");
+	return Token(quit);
 }

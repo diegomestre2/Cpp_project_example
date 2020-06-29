@@ -194,6 +194,7 @@ int main() {
 	double val{0.0};
 	try {
 		while (cin) {
+			std::cout << '>';
 			Token t = ts.get();
 
 			if (t.kind == 'q')
@@ -207,7 +208,7 @@ int main() {
 		keep_window_open();
 	} catch (exception &e) {
 		cerr << "error: " << e.what() << '\n';
-		keep_window_open();
+		keep_window_open("~~");
 		return 1;
 	} catch (...) {
 		cerr << "Oops: unknown exception!\n";

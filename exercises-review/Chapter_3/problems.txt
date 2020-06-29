@@ -1,0 +1,47 @@
+Chapter 1.
+
+1.What is the purpose of the “Hello, World!” program?
+
+The main purpose of the "Hello, World" program is to output the setence in the standard output and show to use
+iostream library while also the compilation and execution of a C++ program.
+
+2.Name the four parts of a function.
+1. Function definition/name
+2. Function parameters - enclosed in parentheses ()
+3. Function return - defines the type of the return to whoever called the function
+4. Function body - enclosed by curly braces {} which list the actions called statements
+
+3. Name a function that must appear in every C++ program.
+Main function is the function where the program starts. In this case, the CPU program counter (PC) starts the execution from this point
+
+4. In the “Hello, World!” program, what is the purpose of the line return 0;?
+The main pourpose of the line return 0; is to return to the caller that the program has executed correctly.
+
+5. What is the purpose of the compiler?
+The purpose of th compiler is to translate the program language defined by the programmer into a machine language. It generates
+the object code files .o
+
+6. What is the purpose of the #include directive?
+The purpose of the #include directive is to define a text file where some function is defined then the linker can find this function and include into
+the main program.
+
+7. What does a .h suffix at the end of a file name signify in C++?
+It means that file is a header where functions are defined.
+
+8. What does the linker do for your program?
+
+It links the object files that are referenced by each other into an executable program.
+
+9. What is the difference between a source file and an object file?
+
+The source file contains the program defined by a programmer using a program language. The object files, on the other hand, containsthe machine codenecessary
+to generate the executable program.
+
+
+10. What is an IDE and what does it do for you?
+
+It is an Interactive Development Environment used to optimize code development. It includes a text editor with helpful tools, such as built in debbuger
+colored texts to identify keywords and names, etc.
+
+11. If you understand everything in the textbook, why is it necessary to practice?
+Because programming involve the practic of solving problems which might improve as much as you solve more problems.
