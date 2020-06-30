@@ -73,3 +73,4 @@ std::ostream &operator<<(std::ostream &os, const Book &rhs) {
 }
 
 enum class Genre { fiction, nonfiction, periodical, biography, children };
+git
