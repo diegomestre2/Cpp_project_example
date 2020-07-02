@@ -2,9 +2,11 @@
 #include "book.hpp"
 #include "chrono.hpp"
 #include "patron.hpp"
+#include "std_lib_facilities.hpp"
 
 #include <algorithm>
 #include <exception>
+#include <iostream>
 #include <vector>
 
 struct Transaction {
@@ -33,21 +35,23 @@ public:
 	}
 	void checkout_book(Patron user, Book book_to_borrow) {
 		if (std::none_of(patrons.begin(), patrons.end(),
-		                 [&](auto patron) { return patron.user_name == user.user_name; })) {
-			throw std::exception("Patron not valid");
+		                 [&](auto patron) { return patron.get_user_name() == user.get_user_name(); })) {
+			throw "Patron not valid";
 		}
-		if (std::none_of(books.begin(), books.end(), [&](auto book) { return book.title == book_to_borrow.title; })) {
-			throw std::exception("Book not valid");
+		if (std::none_of(books.begin(), books.end(),
+		                 [&](auto book) { return book.get_title() == book_to_borrow.get_title(); })) {
+			throw "Book not valid";
 		}
 		if (patron.has_debt()) {
-			throw std::exception("Patorn has debt");
+			throw "Patron has debt";
 		}
-		auto date = new Date(Year(2020), Month::jul, 1);
-		transactions.emplace_back(patron, book, date);
+		Chrono::Date date(Chrono::Year(2020), Chrono::Month::jul, 1);
+		transactions.emplace_back(user, book_to_borrow, date);
+		std::cout << "checkout complete!" << std::endl;
 	}
 
 private:
-	std::vector<Book> books;
-	std::vector<Patron> patrons;
-	std::vector<Transaction> transactions;
+	Vector<Book> books;
+	Vector<Patron> patrons;
+	Vector<Transaction> transactions;
 };
