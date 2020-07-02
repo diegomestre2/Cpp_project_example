@@ -168,6 +168,8 @@ if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
     add_executable(chap_9 ${CHAP_9})
     target_link_libraries(chap_9 sources)
     add_executable(name_pair ${NAME_PAIR})
+    add_executable(main ${MAIN})
+    target_link_libraries(main sources)
 
 endif()
 
