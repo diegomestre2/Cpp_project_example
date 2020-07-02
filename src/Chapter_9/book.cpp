@@ -1,7 +1,14 @@
 #include "book.hpp"
 
-int main(int argc, char **argv) {
-	Book book;
+Book::Book(std::string isbn_, std::string title_, std::string author_, std::string copyright_date_, Genre genre_)
+    : genre(genre_) {
+	if (not is_valid_isbn(isbn_)) {
+		throw std::invalid_argument("ISBN not valid. Valid format is n-n-n-x");
+	}
+	isbn = isbn_;
+	author = author_;
+	title = title_;
+	copyright_date = copyright_date_;
 }
 
 bool operator==(Book &lhs, Book &rhs) {
@@ -23,9 +30,9 @@ std::ostream &operator<<(std::ostream &os, Book &rhs) {
 bool Book::is_valid_isbn(std::string &isbn) {
 	size_t count = 0;
 	for (auto ch : isbn) {
-		count++;
 		if (ch != '-') {
-			auto digit = static_cast<uint32_t>(ch + '0');
+			count++;
+			auto digit = static_cast<uint32_t>(ch - '0');
 			if ((digit < 0 || digit > 9)) {
 				if (count == 4) {
 					return true;

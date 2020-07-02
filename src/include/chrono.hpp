@@ -1,6 +1,6 @@
 #pragma once
-#include "std_lib_facilities.hpp"
 
+#include <iostream>
 namespace Chrono {
 
 class Year {
@@ -53,8 +53,8 @@ bool is_date(Year y, Month m, int d);
 bool is_leapyear(Year y);
 bool operator==(const Date &a, const Date &d);
 bool operator!=(const Date &a, const Date &d);
-ostream &operator<<(ostream &os, const Date &d);
-istream &operator>>(istream &is, Date &d);
+std::ostream &operator<<(std::ostream &os, const Date &d);
+std::istream &operator>>(std::istream &is, Date &d);
 enum class Day { monday, tuesday, wednesday, thursday, friday, saturday, sunday };
 Day day_of_week(const Date &d);
 Date next_sunday(const Date d);

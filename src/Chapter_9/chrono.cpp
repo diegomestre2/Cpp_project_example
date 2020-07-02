@@ -5,7 +5,7 @@ namespace Chrono {
 Month int_to_month(int value) {
 	Month new_month{value};
 	if (new_month < Month::jan || Month::dec < new_month)
-		error("bad month!");
+		throw "bad month!";
 	return new_month;
 }
 
@@ -30,7 +30,7 @@ const Date &default_date() {
 Date::Date() : day{default_date().day}, month{default_date().month}, year{default_date().year} {
 }
 
-ostream &operator<<(ostream &os, const Date &date) {
+std::ostream &operator<<(std::ostream &os, const Date &date) {
 	return os << "(" << date.get_year() << "," << int(date.get_month()) << "," << date.get_day() << ')' << std::endl;
 }
 
@@ -101,14 +101,14 @@ bool operator!=(const Date &a, const Date &b) {
 	return !(a == b);
 }
 
-istream &operator>>(istream &is, Date &b) {
+std::istream &operator>>(std::istream &is, Date &b) {
 	int y, m, d;
 	char ch1, ch2, ch3, ch4;
 	is >> ch1 >> y >> ch2 >> m >> ch3 >> d >> ch4;
 	if (!is)
 		return is;
 	if (ch1 != '(' || ch2 != ',' || ch3 != ',' || ch4 != ')') {
-		is.clear(ios_base::failbit);
+		is.clear(std::ios_base::failbit);
 	}
 	b = Date(y, Month(m), d);
 	return is;

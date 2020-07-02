@@ -8,16 +8,7 @@ enum class Genre { fiction, nonfiction, periodical, biography, children };
 class Book {
 public:
 	Book() = default;
-	Book(std::string isbn_, std::string title_, std::string author_, std::string copyright_date_, Genre genre_)
-	    : genre(genre_) {
-		if (not is_valid_isbn(isbn_)) {
-			throw std::invalid_argument("ISBN not valid. Valid format is n-n-n-x");
-		}
-		isbn = isbn_;
-		author = author_;
-		title = title_;
-		copyright_date = copyright_date_;
-	}
+	Book(std::string isbn_, std::string title_, std::string author_, std::string copyright_date_, Genre genre_);
 	void check_in() {
 	}
 	void check_out() {

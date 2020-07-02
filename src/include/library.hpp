@@ -2,20 +2,21 @@
 #include "book.hpp"
 #include "chrono.hpp"
 #include "patron.hpp"
-#include "std_lib_facilities.hpp"
 
 #include <algorithm>
 #include <exception>
 #include <iostream>
+#include <string>
 #include <vector>
 
 struct Transaction {
-	Transaction(Patron patron_, Book book_, Date date_) : patron(patron_), book(book_), date(date_{
+	Transaction(Patron patron_, Book book_, Chrono::Date date_) : book(book_), patron(patron_), date(date_) {
 	}
 	Book book;
 	Patron patron;
-	Date date;
+	Chrono::Date date;
 };
+
 class Library {
 public:
 	Library() = default;
@@ -27,8 +28,9 @@ public:
 	}
 	std::vector<Patron> get_debtors() {
 		std::vector<Patron> debtors;
-		for (auto &patron : patrons) {
-			if (patron.has_debt())
+		for (auto patron : patrons) {
+			auto has_debt = patron.has_debt();
+			if (has_debt)
 				debtors.push_back(patron);
 		}
 		return debtors;
@@ -36,14 +38,17 @@ public:
 	void checkout_book(Patron user, Book book_to_borrow) {
 		if (std::none_of(patrons.begin(), patrons.end(),
 		                 [&](auto patron) { return patron.get_user_name() == user.get_user_name(); })) {
-			throw "Patron not valid";
+			std::cout << "Patron not valid" << std::endl;
+			exit(1);
 		}
 		if (std::none_of(books.begin(), books.end(),
 		                 [&](auto book) { return book.get_title() == book_to_borrow.get_title(); })) {
-			throw "Book not valid";
+			std::cout << "Book not valid" << std::endl;
+			exit(1);
 		}
-		if (patron.has_debt()) {
-			throw "Patron has debt";
+		if (user.has_debt()) {
+			std::cout << "Patron has debt" << std::endl;
+			exit(1);
 		}
 		Chrono::Date date(Chrono::Year(2020), Chrono::Month::jul, 1);
 		transactions.emplace_back(user, book_to_borrow, date);
@@ -51,7 +56,7 @@ public:
 	}
 
 private:
-	Vector<Book> books;
-	Vector<Patron> patrons;
-	Vector<Transaction> transactions;
+	std::vector<Book> books;
+	std::vector<Patron> patrons;
+	std::vector<Transaction> transactions;
 };
