@@ -37,3 +37,6 @@ test.bin
 *.exe
 *.out
 *.app
+
+# Test files
+*.txt
