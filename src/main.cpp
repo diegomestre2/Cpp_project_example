@@ -20,36 +20,46 @@ void test_library() {
 	lib.checkout_book(patron2, book2);
 }
 
-int main(int argc, char **argv) {
+void test_point() {
 	std::cout << "Give two coordinate members (x,y):" << '\n';
 	std::vector<Point> original_points;
-	std::cout << "Creating points" << '\n';
-	for (int x, y; std::cin >> x >> y;) {
-		auto point = Point(x, y);
-		original_points.push_back(point);
-		point.print();
+
+	{
+		for (int x, y; std::cin >> x >> y;) {
+			auto point = Point(x, y);
+			original_points.push_back(point);
+			point.print();
+		}
 	}
 	std::cout << "Writing Points" << '\n';
 	auto file_name = std::string("mydata.txt");
-	std::ofstream output{file_name};
-	if (!output)
-		std::cout << "error on output file!" << std::endl;
-	for (auto &point : original_points) {
-		output << point;
+	{
+		std::ofstream output{file_name};
+		if (!output)
+			std::cout << "error on output file!" << std::endl;
+		for (auto &point : original_points) {
+			output << point;
+		}
 	}
 	std::cout << "Reading Points" << '\n';
-	std::ifstream input{file_name};
-	if (!input)
-		std::cout << "error on input file!" << std::endl;
 	std::vector<Point> processed_points;
-	char x, y;
-	while (true) {
-		if (!(input >> x >> y))
-			break;
-		processed_points.emplace_back(x, y);
+	{
+		std::ifstream input{file_name};
+		if (!input)
+			std::cout << "error on input file!" << std::endl;
+		char x, y;
+		while (true) {
+			if (!(input >> x >> y))
+				break;
+			processed_points.emplace_back(static_cast<int>(x - '0'), static_cast<int>(y - '0'));
+		}
 	}
 	std::cout << "Processed" << '\n';
 	for (auto &point : processed_points) {
 		point.print();
 	}
+}
+
+int main(int argc, char **argv) {
+	test_point();
 }
