@@ -68,7 +68,7 @@ SET(CMAKE_CXX_ARCHIVE_FINISH "<CMAKE_RANLIB> -no_warning_for_no_symbols -c <TARG
 
 #SET(CMAKE_BUILD_TYPE distribution)
 
-include_directories( "src/include" )
+include_directories( "include" )
 
 # ---------------------------------------
 # Add all sources to the variable SOURCES
@@ -80,14 +80,14 @@ include_directories( "src/include" )
 # ------------------
 add_library(sources src/Chapter_6/calculator.cpp src/Chapter_6/name_value.cpp src/Chapter_6/english_gramma.cpp src/Chapter_6/game.cpp src/Chapter_8/my.cpp src/Chapter_9/chrono.cpp src/Chapter_9/book.cpp)
 target_include_directories(sources PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>
     PRIVATE src)
 
 # -----------------------
 #  Add sources separately
 # -----------------------
-set(MAIN src/main.cpp)
+set(MAIN src/Chapter_9/main.cpp)
 set(EXERCISES src/Chapter_2/exercises.cpp)
 set(AGE src/Chapter_3/age.cpp)
 set(OPERATIONS src/Chapter_3/operations.cpp)
