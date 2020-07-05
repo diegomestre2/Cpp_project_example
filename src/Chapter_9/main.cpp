@@ -1,5 +1,7 @@
 #include "library.hpp"
 #include "point.hpp"
+#include "store_temps.cpp"
+#include "temp_stats.cpp"
 
 #include <iostream>
 #include <string>
@@ -83,5 +85,6 @@ void test_sum_num() {
 }
 
 int main(int argc, char **argv) {
-	test_sum_num();
+	test_store_temps();
+	temp_stats();
 }
