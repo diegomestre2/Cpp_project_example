@@ -187,4 +187,3 @@ install(
 	DIRECTORY src/cuda
 	DESTINATION include
 )]]
-

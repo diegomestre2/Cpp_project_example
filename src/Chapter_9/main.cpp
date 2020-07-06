@@ -1,3 +1,4 @@
+#include "file_append.cpp"
 #include "library.hpp"
 #include "point.hpp"
 #include "store_temps.cpp"
@@ -85,6 +86,5 @@ void test_sum_num() {
 }
 
 int main(int argc, char **argv) {
-	test_store_temps();
-	temp_stats();
+	test_file_append();
 }
