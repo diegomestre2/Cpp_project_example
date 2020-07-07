@@ -7,6 +7,8 @@ constexpr const char number = '8';
 constexpr const char prompt = '>';
 constexpr const char result_char = '=';
 constexpr const char let = 'L';
+constexpr const char from = 'F';
+constexpr const char to = 'T';
 constexpr const char name = 'n';
 constexpr const char *decllet = "let";
 constexpr const char *declfrom = "from";
@@ -70,7 +72,7 @@ public:
 	void clean_up();
 	double statement();
 	double declaration();
-	void get_input_from_file();
+	double get_input_from_file();
 	void write_output_to_file();
 	bool is_declared(const string &var);
 	double define_name(const string &var_name, double value);
