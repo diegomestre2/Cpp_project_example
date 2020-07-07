@@ -285,7 +285,7 @@ double Calculator::get_input_from_file() {
 	if (token.kind != name) {
 		error("name expected in from file");
 	}
-	string file_name = token.name;
+	string file_name = token.name + ".txt";
 	ifstream input_file(file_name);
 	char ch{'\0'};
 	while (true) {
@@ -301,7 +301,7 @@ void Calculator::write_output_to_file() {
 	if (token.kind != name) {
 		error("name expected in from file");
 	}
-	string file_name = token.name;
+	string file_name = token.name + ".txt";
 	ofstream output{file_name};
 	auto exp = get_expression();
 	output << "=" << exp << '\n';
