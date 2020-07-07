@@ -111,6 +111,7 @@ set(CHAP_8 src/Chapter_8/use.cpp)
 set(NAMESPACE src/Chapter_8/namespace.cpp)
 set(CHAP_9 src/Chapter_9/date_use.cpp)
 set(NAME_PAIR src/Chapter_9/name_pair.cpp)
+set(MAIN10 src/Chapter_10/main.cpp)
 
 
 # -----------------------
@@ -170,6 +171,9 @@ if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
     add_executable(name_pair ${NAME_PAIR})
     add_executable(main ${MAIN})
     target_link_libraries(main sources)
+     # Chapter 10
+     add_executable(main10 ${MAIN10})
+     target_link_libraries(main10 sources)
 
 endif()
 
