@@ -1,8 +1,5 @@
-#include "file_append.cpp"
 #include "library.hpp"
 #include "point.hpp"
-#include "store_temps.cpp"
-#include "temp_stats.cpp"
 
 #include <iostream>
 #include <string>
@@ -64,5 +61,5 @@ void test_point() {
 }
 
 int main(int argc, char **argv) {
-	test_file_append();
+	test_point();
 }

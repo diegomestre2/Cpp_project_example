@@ -57,6 +57,10 @@ Token TokenStream::get() {
 			cin.putback(ch);
 			if (s == decllet) {
 				return Token(let);
+			} else if (s == declfrom) {
+				return Token(from);
+			} else if (s == declto) {
+				return Token(to);
 			}
 			return Token(name, s);
 		}
@@ -74,7 +78,7 @@ void TokenStream::ignore(char c) {
 	full = false;
 	// now search input
 	char ch{'\0'};
-	while (std::cin >> ch)
+	while (cin >> ch)
 		if (ch == 0)
 			return;
 }
@@ -107,7 +111,7 @@ void Calculator::run() {
 
 void Calculator::run_cli() {
 	while (cin) {
-		std::cout << prompt;
+		cout << prompt;
 
 		Token t = ts.get();
 		while (t.kind == print) // eat ';'
@@ -134,6 +138,12 @@ double Calculator::statement() {
 			return get_expression();
 		}
 		error("variable name not declared!");
+	}
+	case from: {
+		return get_input_from_file();
+	}
+	case to: {
+		write_output_to_file();
 	}
 	default:
 		ts.putback(t);
@@ -268,4 +278,33 @@ Token Calculator::get_token_for_name(const string &name) {
 	}
 	error("Name not declared");
 	return Token(quit);
+}
+
+double Calculator::get_input_from_file() {
+	auto token = ts.get();
+	if (token.kind != name) {
+		error("name expected in from file");
+	}
+	string file_name = token.name;
+	ifstream input_file(file_name);
+	char ch{'\0'};
+	while (true) {
+		if (!(input_file >> ch))
+			break;
+		ts.putback(ch);
+	}
+	auto exp = get_expression();
+	return exp;
+}
+void Calculator::write_output_to_file() {
+	auto token = ts.get();
+	if (token.kind != name) {
+		error("name expected in from file");
+	}
+	string file_name = token.name;
+	ofstream output{file_name};
+	auto exp = get_expression();
+	output << "=" << exp << '\n';
+	keep_window_open();
+	exit(0);
 }
