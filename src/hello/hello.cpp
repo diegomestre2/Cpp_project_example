@@ -1,5 +1,5 @@
-#include <hello/hello.hpp>
+#include "hello.hpp"
 
-void Hello::print(){
-	std::cout <<  hello << std::endl;
+void Hello::print() {
+	std::cout << hello << std::endl;
 }

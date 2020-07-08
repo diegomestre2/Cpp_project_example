@@ -1,6 +1,8 @@
 # Add includes (*.hpp files)
-include_directories(../third_party/catch)
+include_directories(${PROJECT_SOURCE_DIR}/third_party/catch)
+include_directories(${PROJECT_SOURCE_DIR}/third_party/include/catch)
 include_directories(include)
+
 # Add directories
 add_subdirectory(helpers)
 add_subdirectory(hello)

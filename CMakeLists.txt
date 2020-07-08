@@ -110,6 +110,8 @@ if((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME OR MODERN_CMAKE_BUILD_TESTING) AND 
                 -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
                 -DCMAKE_INSTALL_PREFIX=${CMAKE_SOURCE_DIR}/third_party/catch
                 )
+                file(COPY  ${PROJECT_SOURCE_DIR}/third_party/catch/include/catch2/catch.hpp DESTINATION "${PROJECT_SOURCE_DIR}/third_party/catch/")
+                file(REMOVE_RECURSE ${PROJECT_SOURCE_DIR}/third_party/catch/include ${PROJECT_SOURCE_DIR}/third_party/catch/lib ${PROJECT_SOURCE_DIR}/third_party/catch/share)
     endif()
 endif()
 
