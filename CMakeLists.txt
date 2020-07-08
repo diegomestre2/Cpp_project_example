@@ -1,27 +1,22 @@
-
 # CMakeLists.txt for the Cpp_exercises project
-#
 # Notes:
+# 	To use a different compiler with CMake, run it as follows:
+# 	cmake -D CMAKE_C_COMPILER=/path/to/your/cc -D CMAKE_CXX_COMPILER=/path/to/your/c++ your_project_dir
 #
-# To use a different compiler with CMake, run it as follows:
-#
-# cmake -D CMAKE_C_COMPILER=/path/to/your/cc -D CMAKE_CXX_COMPILER=/path/to/your/c++ your_project_dir
-#
-#
-cmake_minimum_required (VERSION 3.1)
+cmake_minimum_required (VERSION 3.1...3.6)
 
 # My own cmake Modules
-# 
-#set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/" "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
-#
-#
+#	set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/" "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
 
 # -----------------------------------
 # Project name, version & build type
 # -----------------------------------
+project(CppProjectExample
+    VERSION 0.1
+    DESCRIPTION "An example project with CMake"
+    LANGUAGES CXX)
 
-
-
+# Forces Build type release----------------------------
 if (NOT CMAKE_BUILD_TYPE OR CMAKE_BUILD_TYPE STREQUAL "")
     set(CMAKE_BUILD_TYPE "Release" CACHE STRING "" FORCE)
 endif()
@@ -29,8 +24,8 @@ endif()
 message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 
 
-# Disable in-source builds to prevent source tree corruption.
-if(" ${CMAKE_SOURCE_DIR}" STREQUAL " ${CMAKE_BINARY_DIR}")
+# Disables in-source builds to prevent source tree corruption.
+if("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_BINARY_DIR}")
   message(FATAL_ERROR "
 FATAL: In-source builds are not allowed.
        You should create a separate directory for build files.
@@ -41,153 +36,127 @@ FATAL: In-source builds are not allowed.
 ")
 endif()
 
-if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
-    # This is the top-level project.
-	PROJECT (Cpp_principles)
+# Only do these if this is the main project, and not if it is included through add_subdirectory
+if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
 
-#	# No versioning for now
-#
-#	set(PROJECT_MAJOR_VERSION 0)
-#	set(PROJECT_MINOR_VERSION 1)
-#	set(PROJECT_PATCH_VERSION 0)
-#	set(PROJECT_VERSION ${PROJECT_MAJOR_VERSION}.${PROJECT_MINOR_VERSION}.${PROJECT_PATCH_VERSION})
+    # Optionally set things like CMAKE_CXX_STANDARD, CMAKE_POSITION_INDEPENDENT_CODE here
+    
+    # Let's ensure -std=c++xx instead of -std=g++xx
+    set(CMAKE_CXX_EXTENSIONS OFF)
+
+    # Let's nicely support folders in IDE's
+    set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
+    # Testing only available if this is the main app
+    # Note this needs to be done in the main CMakeLists
+    # since it calls enable_testing, which must be in the
+    # main CMakeLists.
+    include(CTest)
+
+    # Docs only available if this is the main app
+    find_package(Doxygen)
+    if(Doxygen_FOUND)
+	    add_subdirectory(docs)
+    else()
+	    message(STATUS "Doxygen not found, not building docs")
+    endif()
 endif()
+
+# Accumulator library
+# This is header only, so could be replaced with git submodules or FetchContent
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules")
+# find_package(Boost REQUIRED)
+find_package(Threads REQUIRED)
+# find_package(Catch2 REQUIRED) # Uncomment if Catch2 is installed
+set(CMAKE_VERBOSE_MAKEFILE OFF)
 
 
 # ----------------------------
 # General C/C++ build settings
 # ----------------------------
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -Wall -Wpedantic" )
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG -Og -g -march=native")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -Wall -Wpedantic -fPIC -ftest-coverage" )
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG -Og -g -march=native -fsanitize=address -Woverloaded-virtual")
 SET(CMAKE_C_ARCHIVE_FINISH   "<CMAKE_RANLIB> -no_warning_for_no_symbols -c <TARGET>")
 SET(CMAKE_CXX_ARCHIVE_FINISH "<CMAKE_RANLIB> -no_warning_for_no_symbols -c <TARGET>")
+set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -fsanitize=address")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address")
 
-#SET(CMAKE_BUILD_TYPE distribution)
-
-include_directories( "include" )
-
-# ---------------------------------------
-# Add all sources to the variable SOURCES
-# ---------------------------------------
-#file(GLOB SOURCES "src/Chapter_6/*.cpp")
-
-# ------------------
-# Add link_libraries
-# ------------------
-add_library(sources src/Chapter_6/calculator.cpp src/Chapter_6/name_value.cpp src/Chapter_6/english_gramma.cpp src/Chapter_6/game.cpp src/Chapter_8/my.cpp src/Chapter_9/chrono.cpp src/Chapter_9/book.cpp)
-target_include_directories(sources PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    $<INSTALL_INTERFACE:include>
-    PRIVATE src)
-
-# -----------------------
-#  Add sources separately
-# -----------------------
-set(MAIN src/Chapter_9/main.cpp)
-set(EXERCISES src/Chapter_2/exercises.cpp)
-set(AGE src/Chapter_3/age.cpp)
-set(OPERATIONS src/Chapter_3/operations.cpp)
-set(REPEATED src/Chapter_3/repeated_words.cpp)
-set(CONVERTIONS src/Chapter_3/convertions.cpp)
-set(CHAP4 src/Chapter_4/coins_conversion.cpp)
-set(TRY4 src/Chapter_4/try_this.cpp)
-set(DRILL1 src/Chapter_2/drill.cpp)
-set(DRILL3 src/Chapter_3/drill.cpp)
-set(DRILL4 src/Chapter_4/drill4.cpp)
-set(DRILL5 src/Chapter_5/drill5.cpp)
-set(DRILL6 src/Chapter_6/drill6.cpp)
-set(EXERCISES3 src/Chapter_3/exercises.cpp)
-set(EXERCISES4 src/Chapter_4/exercises_4.cpp)
-set(EXERCISES5 src/Chapter_5/exercises_5.cpp)
-set(EXERCISES6 src/Chapter_6/exercises_6.cpp)
-set(MAIN_CH6 src/Chapter_6/main.cpp)
-set(CALC2 src/Chapter_6/calculator02buggy.cpp)
-set(CALC3 src/Chapter_7/calculator3.cpp)
-set(CHAP_8 src/Chapter_8/use.cpp)
-set(NAMESPACE src/Chapter_8/namespace.cpp)
-set(CHAP_9 src/Chapter_9/date_use.cpp)
-set(NAME_PAIR src/Chapter_9/name_pair.cpp)
-set(MAIN10 src/Chapter_10/main.cpp)
-
-
-# -----------------------
-# Main target(s)
-# -----------------------
-
-#[[if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
-	set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "lib/")
-	set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "lib/")
+# Testing only available if this is the main app
+# Emergency override MODERN_CMAKE_BUILD_TESTING provided as well
+if((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME OR MODERN_CMAKE_BUILD_TESTING) AND BUILD_TESTING)
+    message(STATUS "Unit Tests: Included")
+    add_subdirectory(tests)
+    enable_testing()
+    
+    #Add catch for tests
+    if(EXISTS "${PROJECT_SOURCE_DIR}/third_party/catch/catch.hpp")
+        # Include catch.hpp file
+        message("-- Catch file Found!")
+    else()
+        message("-- Catch file not Found!")
+        message("-- Downloading Catch file..")
+        # Download and compile Catch lib for unit tests
+        include(ExternalProject)
+        ExternalProject_Add(catch2
+                URL "https://github.com/catchorg/Catch2/archive/v2.9.1.tar.gz"
+                URL_HASH MD5=4980778888fed635bf191d8a86f9f89c
+                CMAKE_ARGS  -DCATCH_BUILD_TESTING=OFF
+                -DCMAKE_BUILD_TYPE=Release
+                -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
+                -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
+                -DCMAKE_INSTALL_PREFIX=${CMAKE_SOURCE_DIR}/third_party/catch
+                )
+    endif()
 endif()
 
-cuda_add_library(
-	cuda-api-wrappers
-	src/cuda/api/device_properties.cpp
-	src/cuda/api/profiling.cpp
-)]]
+# The compiled library code is here
+add_subdirectory(src)
 
-if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
+# The executable code is here
+add_subdirectory(main)
 
-	#link_libraries(cuda-api-wrappers)
- 
-	set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "bin")
-    # Chapter 02
-    add_executable(drill_1 ${DRILL1})
-    add_executable(exercises ${EXERCISES})
-    #target_link_libraries(drill_1 )
-    # Chapter 03
-    add_executable(age ${AGE})
-    add_executable(operations ${OPERATIONS})
-    add_executable(repeated_words ${REPEATED})
-    add_executable(convertions ${CONVERTIONS})
-    add_executable(drill3 ${DRILL3})
-    add_executable(exercises_3 ${EXERCISES3})
-    # Chapter 04
-    add_executable(chap4 ${CHAP4})
-    add_executable(try_this4 ${TRY4})
-    add_executable(drill4 ${DRILL4})
-    add_executable(exercises_4 ${EXERCISES4})
-    # Chapter 05
-    add_executable(drill5 ${DRILL5})
-    add_executable(exercises_5 ${EXERCISES5})
-    # Chapter 06
-    add_executable(drill6 ${DRILL6})
-    add_executable(exercises_6 ${EXERCISES6})
-    #add_executable(mainch6 ${MAIN_CH6})
-    #target_link_libraries(mainch6 sources)
-    add_executable(calculator2 ${CALC2})
-    add_executable(calculator3 ${CALC3})
-    target_link_libraries(calculator3 sources)
-    # Chapter 08
-    add_executable(chap8 ${CHAP_8})
-    target_link_libraries(chap8 sources)
-    add_executable(namespace ${NAMESPACE})
-    # Chapter 09
-    add_executable(chap_9 ${CHAP_9})
-    target_link_libraries(chap_9 sources)
-    add_executable(name_pair ${NAME_PAIR})
-    add_executable(main ${MAIN})
-    target_link_libraries(main sources)
-     # Chapter 10
-     add_executable(main10 ${MAIN10})
-     target_link_libraries(main10 sources)
+# ---------------------
+# Config File
+# ____________________
+configure_file(include/build.hpp.in ${CMAKE_CURRENT_BINARY_DIR}/include/build.hpp)
 
+# Determine install paths
+set(INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries")
+set(INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables")
+set(INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files")
+set(INSTALL_CMAKE_DIR ${DEF_INSTALL_CMAKE_DIR} CACHE PATH "Installation directory for CMake files")
+
+
+# ---------------------
+# Enable options
+# ---------------------
+
+# Output Color
+option(FORCE_COLORED_OUTPUT
+	   "Always produce ANSI-colored output (GNU/Clang only)." TRUE) 
+if(${FORCE_COLORED_OUTPUT})
+	if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+		add_compile_options(-fdiagnostics-color=always)
+	elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+		add_compile_options(-fcolor-diagnostics)
+	endif()
 endif()
 
-# -------------
+# Sanitizer
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    option(ENABLE_SANITIZER "Enable sanitizer." TRUE)
+endif()
+if(${ENABLE_SANITIZER})
+    message(STATUS "Sanatizer ENABLED")
+  set(CXX_EXTRA_DEBUG "${CXX_EXTRA_DEBUG} -fsanitize=address")
+endif()
 
-#[[INSTALL(
-	TARGETS cuda-api-wrappers
-	ARCHIVE # For CMake, a static library is an ARCHIVE, a dynamic library is a RUNTIME
-	DESTINATION lib
-	INCLUDES DESTINATION include
-	CONFIGURATIONS Release RelWithDebugInfi
-)
-
-install(
-	DIRECTORY src/cuda
-	DESTINATION include
-)]]
+# Explicit Exceptions
+option(EXPLICIT_EXCEPTIONS "Explicitly enable C++ exceptions." FALSE)
+if(${EXPLICIT_EXCEPTIONS})
+  set(CXX_EXTRA "${CXX_EXTRA} -fexceptions")
+endif()
