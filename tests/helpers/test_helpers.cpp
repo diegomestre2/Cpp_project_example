@@ -1,3 +1,7 @@
-#include <test_helpers.hpp>
+#include "test_helpers.hpp"
 
-#define test 10
+#define value 10
+
+int test() {
+	return value;
+}

@@ -91,14 +91,13 @@ if((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME OR MODERN_CMAKE_BUILD_TESTING) AND 
     message(STATUS "Unit Tests: Included")
     add_subdirectory(tests)
     enable_testing()
-    
+    find_package(Catch2)
     #Add catch for tests
     if(EXISTS "${PROJECT_SOURCE_DIR}/third_party/catch/catch.hpp")
         # Include catch.hpp file
         message("-- Catch file Found!")
     else()
         message("-- Catch file not Found!")
-        message("-- Downloading Catch file..")
         # Download and compile Catch lib for unit tests
         include(ExternalProject)
         ExternalProject_Add(catch2
@@ -110,21 +109,19 @@ if((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME OR MODERN_CMAKE_BUILD_TESTING) AND 
                 -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
                 -DCMAKE_INSTALL_PREFIX=${CMAKE_SOURCE_DIR}/third_party/catch
                 )
-                file(COPY  ${PROJECT_SOURCE_DIR}/third_party/catch/include/catch2/catch.hpp DESTINATION "${PROJECT_SOURCE_DIR}/third_party/catch/")
-                file(REMOVE_RECURSE ${PROJECT_SOURCE_DIR}/third_party/catch/include ${PROJECT_SOURCE_DIR}/third_party/catch/lib ${PROJECT_SOURCE_DIR}/third_party/catch/share)
     endif()
 endif()
+
+# ---------------------
+# Config File
+# ____________________
+configure_file(include/build.hpp.in ${CMAKE_CURRENT_BINARY_DIR}/include/build.hpp)
 
 # The compiled library code is here
 add_subdirectory(src)
 
 # The executable code is here
 add_subdirectory(main)
-
-# ---------------------
-# Config File
-# ____________________
-configure_file(include/build.hpp.in ${CMAKE_CURRENT_BINARY_DIR}/include/build.hpp)
 
 # Determine install paths
 set(INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries")
