@@ -1,5 +1,5 @@
-.PHONY: all
-all: main debug
+.PHONY: all release debug
+all: release
 
 GENERATOR=
 FORCE_COLOR=
@@ -11,7 +11,7 @@ endif
 clean:
 	@rm -drf build
 
-main:
+release:
 	@mkdir -p build/release && \
 	cd build/release && \
 	cmake  $(GENERATOR) $(FORCE_COLOR) -DCMAKE_BUILD_TYPE=Release ../.. && \
