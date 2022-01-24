@@ -46,7 +46,7 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
 
     # Let's nicely support folders in IDE's
     set_property(GLOBAL PROPERTY USE_FOLDERS ON)
-
+    
     # Testing only available if this is the main app
     # Note this needs to be done in the main CMakeLists
     # since it calls enable_testing, which must be in the
@@ -89,27 +89,13 @@ set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address")
 # Emergency override MODERN_CMAKE_BUILD_TESTING provided as well
 if((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME OR MODERN_CMAKE_BUILD_TESTING) AND BUILD_TESTING)
     message(STATUS "Unit Tests: Included")
-    add_subdirectory(tests)
+     # Testing only available if this is the main app
+    # Note this needs to be done in the main CMakeLists
+    # since it calls enable_testing, which must be in the
+    # main CMakeLists.
+    include(CTest)  # Automatically invokes 
     enable_testing()
-    find_package(Catch2)
-    #Add catch for tests
-    if(EXISTS "${PROJECT_SOURCE_DIR}/third_party/catch/catch.hpp")
-        # Include catch.hpp file
-        message("-- Catch file Found!")
-    else()
-        message("-- Catch file not Found!")
-        # Download and compile Catch lib for unit tests
-        include(ExternalProject)
-        ExternalProject_Add(catch2
-                URL "https://github.com/catchorg/Catch2/archive/v2.9.1.tar.gz"
-                URL_HASH MD5=4980778888fed635bf191d8a86f9f89c
-                CMAKE_ARGS  -DCATCH_BUILD_TESTING=OFF
-                -DCMAKE_BUILD_TYPE=Release
-                -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
-                -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
-                -DCMAKE_INSTALL_PREFIX=${CMAKE_SOURCE_DIR}/third_party/catch
-                )
-    endif()
+    add_subdirectory(tests)
 endif()
 
 # ---------------------
