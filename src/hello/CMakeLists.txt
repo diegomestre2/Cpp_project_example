@@ -6,7 +6,7 @@ file(GLOB HEADER_LIST CONFIGURE_DEPENDS "${PROJECT_SOURCE_DIR}/include/*.hpp")
 # set(HEADER_LIST "${WhiteBoxCompression_SOURCE_DIR}/include/modern/lib.hpp")
 
 # Make an automatic library - will be static or dynamic based on user setting
-add_library(hello_library hello.cpp ${HEADER_LIST})
+add_library(hello_library OBJECT hello.cpp ${HEADER_LIST})
 # We need this directory, and users of our library will need it too
 target_include_directories(hello_library PUBLIC "${PROJECT_SOURCE_DIR}/include")
 # All users of this library will need at least C++11
